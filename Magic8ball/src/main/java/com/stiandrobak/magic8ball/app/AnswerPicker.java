@@ -3,7 +3,13 @@ package com.stiandrobak.magic8ball.app;
 import java.util.Random;
 
 /**
- * Created by stiansd on 10.04.14.
+ * Created on 10.04.14.
+ * @author Stian Drøbak
+ * @version 1.0b1
+ */
+
+/**
+ *  Class for getting a "random" answers among the ones listed.
  */
 public class AnswerPicker {
     final private static String later = "Ask again later";
@@ -14,7 +20,11 @@ public class AnswerPicker {
     };
     final private static Random random = new Random();
 
-    static String getAnswer(){
+    /**
+     * Get a "random" answer from the static answers.
+     * @return string from AnswerPicker.answers
+     */
+    public static String getAnswer(){
         int number = random.nextInt(answers.length * 2);
         if(number >= answers.length){
             return later;
