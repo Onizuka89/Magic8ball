@@ -1,16 +1,25 @@
 package com.stiandrobak.magic8ball.app;
 
 import android.app.Activity;
+import android.hardware.SensorEvent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.hardware.SensorManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener{
     private TextView msg;
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private Position position;
+    private boolean initialPositionSet = false;
+    private static float NOISE = 30.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +33,9 @@ public class MainActivity extends Activity {
                 msg.setText(AnswerPicker.getAnswer());
             }
         });
+        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
 
@@ -47,4 +59,34 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Position newPosition = Position.positionFromArray(event.values);
+        if(initialPositionSet) {
+            Delta delta = position.delta(newPosition);
+            if(delta.anyLargerThan(NOISE)){
+                msg.setText(AnswerPicker.getAnswer());
+            }
+        }else {
+            position = newPosition;
+            initialPositionSet = true;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
 }
