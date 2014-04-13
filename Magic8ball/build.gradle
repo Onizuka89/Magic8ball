@@ -10,6 +10,9 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
+    maven {
+        url "http://stiandrobak.com/maven2"
+    }
 }
 
 android {
