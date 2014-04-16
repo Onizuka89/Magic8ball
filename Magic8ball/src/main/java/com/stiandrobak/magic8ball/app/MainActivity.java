@@ -3,9 +3,12 @@ package com.stiandrobak.magic8ball.app;
 import android.app.Activity;
 import android.hardware.SensorEvent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.hardware.SensorManager;
@@ -14,23 +17,29 @@ import android.hardware.SensorEventListener;
 
 
 public class MainActivity extends Activity implements SensorEventListener{
+    final private Handler handler = new Handler();
     private TextView msg;
     private SensorManager sensorManager;
     private Sensor sensor;
     private Position position;
     private boolean initialPositionSet = false;
     private static float NOISE = 30.0f;
+    private Animation fadeAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade);
         msg = (TextView) findViewById(R.id.message);
         Button b = (Button) findViewById(R.id.switchMessage);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                msg.setText(AnswerPicker.getAnswer());
+                changeText();
+                //handler.postDelayed(new FadeText(msg, AnswerPicker.getAnswer()), 400);
+                //msg.setText(AnswerPicker.getAnswer());
             }
         });
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -73,6 +82,11 @@ public class MainActivity extends Activity implements SensorEventListener{
         }
     }
 
+    private void changeText(){
+        msg.startAnimation(fadeAnimation);
+        handler.postDelayed(new FadeText(msg, AnswerPicker.getAnswer()),400);
+    }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
@@ -83,6 +97,7 @@ public class MainActivity extends Activity implements SensorEventListener{
         super.onResume();
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
+
 
     @Override
     protected void onPause(){
