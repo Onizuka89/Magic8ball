@@ -33,13 +33,6 @@ public class MainActivity extends Activity implements SensorEventListener{
         setContentView(R.layout.activity_main);
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade);
         msg = (TextView) findViewById(R.id.message);
-        Button b = (Button) findViewById(R.id.switchMessage);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeText();
-            }
-        });
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
