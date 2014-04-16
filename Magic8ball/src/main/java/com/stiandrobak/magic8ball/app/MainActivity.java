@@ -38,8 +38,6 @@ public class MainActivity extends Activity implements SensorEventListener{
             @Override
             public void onClick(View v) {
                 changeText();
-                //handler.postDelayed(new FadeText(msg, AnswerPicker.getAnswer()), 400);
-                //msg.setText(AnswerPicker.getAnswer());
             }
         });
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -74,7 +72,7 @@ public class MainActivity extends Activity implements SensorEventListener{
         if(initialPositionSet) {
             Delta delta = position.delta(newPosition);
             if(delta.anyLargerThan(NOISE)){
-                msg.setText(AnswerPicker.getAnswer());
+                changeText();
             }
         }else {
             position = newPosition;
